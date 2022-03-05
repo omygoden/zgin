@@ -15,7 +15,7 @@ import (
 	"time"
 )
 
-func HttpRequest(urlStr, method string, header map[string]string, param map[string]interface{}, proxyUrl string, timeOut int, args ...interface{}) (string, error) {
+func HttpRequest(urlStr, method string, header map[string]string, param interface{}, proxyUrl string, timeOut int, args ...interface{}) (string, error) {
 	_, err := url.ParseRequestURI(urlStr)
 	if err != nil {
 		return "", errors.New("地址格式有误：" + urlStr)
@@ -87,12 +87,18 @@ func HttpRequest(urlStr, method string, header map[string]string, param map[stri
 }
 
 //根据头部content-type不同，对参数进行不同处理
-func formatParamsByHeader(header map[string]string, params map[string]interface{}) io.Reader {
+func formatParamsByHeader(header map[string]string, params interface{}) io.Reader {
+	if v, ok := params.(string); ok {
+		return strings.NewReader(v)
+	}
+	if v, ok := params.([]byte); ok {
+		return bytes.NewReader(v)
+	}
 	contentType := strings.Split(header["Content-Type"], ";")[0]
 	switch contentType {
 	case "application/x-www-form-urlencoded":
 		var strBuff = bytes.NewBufferString("")
-		for k, v := range params {
+		for k, v := range params.(map[string]interface{}) {
 			strBuff.WriteString(fmt.Sprintf("%s=%v&", k, v))
 		}
 		str := strings.TrimRight(strBuff.String(), "&")

@@ -30,10 +30,10 @@ func InitMysqlDriver(maxConn, minConn int) {
 	newLogger := logger.New(
 		log.New(file, "", log.LstdFlags), // io writer
 		logger.Config{
-			SlowThreshold:             time.Millisecond * time.Duration(global.Config.Database.SlowMinTime), // 慢 SQL 阈值
-			LogLevel:                  logger.Info,                                                          // Log level
-			IgnoreRecordNotFoundError: true,                                                                 // Ignore ErrRecordNotFound error for logger
-			Colorful:                  false,                                                                // Disable color
+			//SlowThreshold:             time.Millisecond * time.Duration(global.Config.Database.SlowMinTime), // 慢 SQL 阈值
+			LogLevel:                  logger.Error, // Log level
+			IgnoreRecordNotFoundError: true,         // Ignore ErrRecordNotFound error for logger
+			Colorful:                  false,        // Disable color
 		},
 	)
 
