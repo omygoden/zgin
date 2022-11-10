@@ -3,23 +3,25 @@ package routers
 import (
 	"github.com/gin-gonic/gin"
 	"zgin/internal/api/test"
-	"zgin/internal/middleware"
+	"zgin/internal/middlewares"
 )
 
 func InitRouter() *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
-	r.Use(middleware.RequestLog())
-	r.Use(middleware.ApiRisk())
-	r.Use(middleware.Recovery())
+	r.Use(middlewares.RequestLog())
+	r.Use(middlewares.ApiRisk())
+	r.Use(middlewares.Recovery())
 
 	api := r.Group("api")
 	{
-		testApi := api.Group("test")
+		testApi := api.Group("test").Use(middlewares.ApiCocurrent())
 		{
-			testApi.POST("test", test.Test1)
+			testApi.GET("test", test.Test1)
+			testApi.GET("test2", test.Test2)
 		}
+
 	}
 
 	return r

@@ -29,6 +29,7 @@ func InitLogger() {
 	}
 
 	global.Logger = logs
+	log.Println("日志初始化成功")
 }
 
 func Info(filename, content string, extra map[string]interface{}) {
@@ -39,6 +40,7 @@ func Info(filename, content string, extra map[string]interface{}) {
 	defer fd.Close()
 
 	global.Logger.SetOutput(fd)
+	global.Logger.SetFormatter(&logrus.JSONFormatter{})
 	global.Logger.WithFields(extra).Info(content)
 }
 
@@ -50,16 +52,29 @@ func Error(filename, content string, extra map[string]interface{}) {
 	defer fd.Close()
 
 	global.Logger.SetOutput(fd)
-	global.Logger.WithFields(extra).Error(content)
+	global.Logger.SetFormatter(&logrus.JSONFormatter{
+		TimestampFormat: sfconst.GO_TIME_FULL,
+	})
+
+	global.Logger.WithFields(extra).Error(content, content, content)
 }
 
-func getFilePath(filename string) string {
-	filepath := fmt.Sprintf("%s/%s/%s/%s", os.Getenv("GOPATH"), env.PROJECT_NAME, global.Config.App.LogSavePath, time.Now().Format(sfconst.GO_TIME_YMD))
+var fileMap = make(map[string]string)
 
-	if _, err := os.Stat(filepath); err != nil {
-		os.Mkdir(filepath, os.ModePerm)
+func getFilePath(fileName string) string {
+	filePath := fmt.Sprintf("%s/%s/%s/%s", os.Getenv("GOPATH"), env.PROJECT_NAME, global.Config.App.LogSavePath, time.Now().Format(sfconst.GO_TIME_YMD))
+	fullPath := filePath + "/" + fileName
+
+	if v,ok := fileMap[fullPath];ok {
+		return v
 	}
-	filepath = filepath + "/" + filename
 
-	return filepath
+	if _, err := os.Stat(filePath); err != nil {
+		os.Mkdir(filePath, os.ModePerm)
+	}
+
+	fileMap[fullPath] = fullPath
+
+
+	return fullPath
 }

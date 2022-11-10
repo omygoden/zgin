@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package helloword;
+package pb;
 
 service Greeter {
     rpc SayHello (HelloRequest) returns (HelloReply) {}

@@ -6,5 +6,10 @@ import (
 )
 
 func Test1(ctx *gin.Context) {
-	common.Success(ctx, "success")
+	//p := global.RedisClient.Pipeline()
+	common.Success(ctx, "")
+}
+
+func Test2(ctx *gin.Context) {
+	common.Success(ctx, "")
 }

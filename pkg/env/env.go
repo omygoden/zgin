@@ -11,7 +11,7 @@ import (
 const PROJECT_NAME = "zgin"
 
 func InitEnv(configName string) {
-	log.Println(configName)
+	// log.Println(configName)
 	vpInit := viper.New()
 	vpInit.SetConfigName(configName)
 	vpInit.SetConfigType("ini") // 高版本才支持ini后缀，早起版本不支持,(经测试：1.4不支持)

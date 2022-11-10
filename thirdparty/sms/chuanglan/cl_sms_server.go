@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"strconv"
 	"zgin/global"
 )
@@ -49,7 +50,7 @@ func (this *ChuangLanSms) BatchSend(sign, mobile, content, extraParams string) e
 		"report":   "true",
 		"uid":      extraParams,
 	}
-	res, err := httprequest(urlStr, params, "POST")
+	res, err := httprequest(urlStr, params, http.MethodPost)
 	if err != nil {
 		return err
 	}

@@ -1,4 +1,4 @@
-package middleware
+package middlewares
 
 import (
 	"fmt"
@@ -30,6 +30,7 @@ func Recovery() gin.HandlerFunc {
 					common.Error(ctx, res.Code, errMsg)
 				} else {
 					serverErrorHandle(err, ctx)
+					log.Println(err)
 					common.Error(ctx, 500, "系统错误，请联系客服")
 				}
 				ctx.Abort()

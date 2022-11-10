@@ -56,7 +56,7 @@ func HttpRequest(urlStr, method string, header map[string]string, param interfac
 	}
 
 	var postParams io.Reader
-	if param != nil && method == "POST" {
+	if param != nil && method == http.MethodPost {
 		postParams = formatParamsByHeader(header, param)
 	} else {
 		postParams = nil

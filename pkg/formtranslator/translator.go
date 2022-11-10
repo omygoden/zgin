@@ -40,6 +40,7 @@ func InitTrans() {
 	addIntInRule(validatorEngine, &translator)
 
 	global.Trans = translator
+	log.Println("翻译器初始化成功")
 }
 
 //添加手机号规则

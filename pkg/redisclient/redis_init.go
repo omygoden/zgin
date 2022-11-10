@@ -18,33 +18,33 @@ var ctx = context.Background()
 func InitRedisPool(maxConn, minConn int) {
 	var redisIndexs = strings.Split(global.Config.Redis.DbIndexs, ",")
 	var indexs string
-	var redisDbs = make([]int, len(redisIndexs))
 
-	for k, v := range redisIndexs {
-		i, _ := strconv.Atoi(v)
-		redisDbs[k] = i
+	/* 如果需要多个库，则实例化到map里 */
+	if len(redisIndexs) > 0 {
+		/* 云redis多库 */
+		global.RedisClients = make(map[int]*redis.Client)
+		for _, v := range redisIndexs {
+			idx,_ := strconv.Atoi(v)
+			global.RedisClients[idx] = initRedis(global.Config.Redis,maxConn, minConn, idx)
+			indexs += fmt.Sprintf("%d,", idx)
+		}
 	}
 
-	global.RedisClients = make(map[int]*redis.Client)
-	for _, k := range redisDbs {
-		global.RedisClients[k] = initRedis(maxConn, minConn, k)
-		indexs += fmt.Sprintf("%d,", k)
-	}
-
-	if _, ok := global.RedisClients[0]; !ok {
-		global.RedisClient = initRedis(maxConn, minConn, 0)
-		indexs += fmt.Sprintf("%d,", 0)
-	}
-
-	log.Println(fmt.Sprintf("初始化redis库成功--共%d库，分别是:%s", len(redisIndexs), strings.TrimRight(indexs, ",")))
+	/* 云redis单库 */
+	global.RedisClient = initRedis(global.Config.Redis,maxConn, minConn, global.Config.Redis.DbIndex)
+	/* 本地redis */
+	global.RedisLocalClient = initRedis(global.Config.RedisLocal,maxConn, minConn, global.Config.RedisLocal.DbIndex)
 }
 
-func initRedis(maxConn, minConn, index int) *redis.Client {
+func initRedis(redisConfig global.RedisConfig,maxConn, minConn, index int) *redis.Client {
+	if maxConn == 0 || minConn == 0 {
+		maxConn,minConn = redisConfig.MaxConn,redisConfig.MinIdleConn
+	}
 	client := redis.NewClient(&redis.Options{
 		//连接信息
 		Network:  "tcp",                                                                    //网络类型，tcp or unix，默认tcp
-		Addr:     fmt.Sprintf("%s:%d", global.Config.Redis.Host, global.Config.Redis.Port), //主机名+冒号+端口，默认localhost:6379，正式：10.23.68.87
-		Password: global.Config.Redis.Password,                                             //密码
+		Addr:     fmt.Sprintf("%s:%d", redisConfig.Host, redisConfig.Port), //主机名+冒号+端口，默认localhost:6379，正式：10.23.68.87
+		Password: redisConfig.Password,                                             //密码
 		DB:       index,                                                                    // redis数据库index
 
 		//连接池容量及闲置连接数量
@@ -74,8 +74,9 @@ func initRedis(maxConn, minConn, index int) *redis.Client {
 		//},
 	})
 	if err := client.Ping(ctx).Err(); err != nil {
-		log.Println(fmt.Sprintf("初始化redis失败: %s", err))
+		log.Println(fmt.Sprintf("[%s:%d]redis初始化失败: %s",redisConfig.Host,index, err))
 		os.Exit(1)
 	}
+	log.Println(fmt.Sprintf("[%s:%d]redis初始化成功",redisConfig.Host,index))
 	return client
 }

@@ -6,17 +6,19 @@ import (
 	"zgin/pkg/env"
 	"zgin/pkg/formtranslator"
 	"zgin/pkg/goroutinepool"
-	settings "zgin/pkg/rabbitmq"
+	"zgin/pkg/mongodb"
+	"zgin/pkg/rabbitmq"
 	"zgin/pkg/redisclient"
 	"zgin/pkg/sflogger"
 )
 
 func InitSetting() {
 	setupEnv()
-	//setupDb(global.Config.Database.MaxOpenConns, global.Config.Database.MaxIdleConns)
-	//setupRedis(global.Config.Redis.MaxConn, global.Config.Redis.MinIdleConn)
+	setupDb(global.Config.Database.MaxOpenConns, global.Config.Database.MaxIdleConns)
+	setupRedis(global.Config.Redis.MaxConn, global.Config.Redis.MinIdleConn)
 	setupLogger()
 	setupTrans()
+	// setupMongo()
 	//setupGoruntimePool()
 	//setupRabbitmq()
 	goroutinepool.GoroutineListen()
@@ -66,7 +68,12 @@ func setupTrans() {
 
 //初始化rabbitmq
 func setupRabbitmq() {
-	settings.InitRabbitmq()
+	rabbitmq.InitRabbitmq()
+}
+
+//初始化mongo
+func setupMongo()  {
+	mongodb.InitMongodb()
 }
 
 //初始化协程池

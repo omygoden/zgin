@@ -22,15 +22,36 @@ func RedisErrorLog(methodName, errMsg string) {
 	})
 }
 
-//mysql服务器异常处理
-func MysqlErrorLog(tableName, errMsg, method, params string) {
+// mysql服务器异常处理
+func MysqlErrorLog(tableName, errMsg, sql, costTime, rows interface{}) {
 	msg := map[string]interface{}{
-		"【表名】":   tableName,
+		"【表名】":     tableName,
 		"【错误信息】": errMsg,
-		"【操作】":   method,
-		"【参数】":   params,
+		"【sql】":      sql,
+		"【耗时】":     costTime,
+		"【影响行】":   rows,
 	}
 	Error(constant.LOG_MYSQL_ERR, "mysql错误日志", msg)
+}
+
+func MysqlLog(tableName, sql, costTime, rows interface{}) {
+	msg := map[string]interface{}{
+		"【表名】":   tableName,
+		"【sql】":    sql,
+		"【耗时】":   costTime,
+		"【影响行】": rows,
+	}
+	Info(constant.LOG_MYSQL, "mysql日志", msg)
+}
+
+func MysqlSlowLog(tableName, sql, costTime, rows interface{}) {
+	msg := map[string]interface{}{
+		"【表名】":   tableName,
+		"【sql】":    sql,
+		"【耗时】":   costTime,
+		"【影响行】": rows,
+	}
+	Info(constant.LOG_MYSQL_SLOW, "mysql慢日志", msg)
 }
 
 //推入队列失败日志

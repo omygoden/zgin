@@ -178,3 +178,26 @@ func GetRedisMdExpire() time.Duration {
 		return time.Hour*time.Duration(23-time.Now().Hour()+int(sfrand.RandRange(1, 5))) + time.Minute*time.Duration(sfrand.RandRange(1, 59))
 	}
 }
+
+func MapFilter(data map[string]interface{}) {
+	var f float64
+	for k, v := range data {
+		if v == f || v == "" || v == nil || v == "0" {
+			delete(data, k)
+		}
+	}
+}
+
+func GetRandStr(num int) string {
+	var m = map[string]string{"0": "A", "1": "B", "2": "C", "3": "D", "4": "E", "5": "F", "6": "G", "7": "H", "8": "I", "9": "J", "10": "K", "11": "L", "12": "M", "13": "N", "14": "O", "15": "P", "16": "Q", "17": "R", "18": "S", "19": "T", "20": "U", "21": "V", "22": "W", "23": "X", "24": "Y", "25": "Z", "26": "0", "27": "1", "28": "2", "29": "3", "30": "4", "31": "5", "32": "6", "33": "7", "34": "8", "35": "9", "36": "a", "37": "b", "38": "c", "39": "d", "40": "e", "41": "f", "42": "g", "43": "h", "44": "i", "45": "j", "46": "k", "47": "l", "48": "m", "49": "n", "50": "o", "51": "p", "52": "q", "53": "r", "54": "s", "55": "t", "56": "u", "57": "v", "58": "w", "59": "x", "60": "y", "61": "z"}
+	var str string
+	for _, v := range m {
+		str += v
+		num--
+		if num == 0 {
+			break
+		}
+	}
+	return str
+}
+
