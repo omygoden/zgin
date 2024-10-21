@@ -18,6 +18,7 @@ func InitSetting() {
 	setupRedis(global.Config.Redis.MaxConn, global.Config.Redis.MinIdleConn)
 	setupLogger()
 	setupTrans()
+	setupClearLog()
 	// setupMongo()
 	//setupGoruntimePool()
 	//setupRabbitmq()
@@ -41,42 +42,46 @@ func CronInitSetting(dbMaxConn, dbMinConn int) {
 	setupGoruntimePool()
 }
 
-//初始化环境变量
+// 初始化环境变量
 func setupEnv() {
 	env.InitEnv("config")
 }
 
-//初始化数据库
+// 初始化数据库
 func setupDb(maxConn, minConn int) {
 	dbdriver.InitMysqlDriver(maxConn, minConn)
 }
 
-//初始化redis连接池
+// 初始化redis连接池
 func setupRedis(maxConn, minConn int) {
 	redisclient.InitRedisPool(maxConn, minConn)
 }
 
-//初始化日志配置
+// 初始化日志配置
 func setupLogger() {
 	sflogger.InitLogger()
 }
 
-//初始化翻译器
+// 初始化翻译器
 func setupTrans() {
 	formtranslator.InitTrans()
 }
 
-//初始化rabbitmq
+// 初始化rabbitmq
 func setupRabbitmq() {
 	rabbitmq.InitRabbitmq()
 }
 
-//初始化mongo
-func setupMongo()  {
+// 初始化mongo
+func setupMongo() {
 	mongodb.InitMongodb()
 }
 
-//初始化协程池
+// 初始化协程池
 func setupGoruntimePool() {
 	goroutinepool.InitGoroutinePool()
+}
+
+func setupClearLog() {
+	sflogger.NewClearLogs()
 }

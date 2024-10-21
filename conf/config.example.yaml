@@ -1,0 +1,80 @@
+App:
+  Env: test
+  Debug: false
+  Host:
+  HttpPort: 10000
+  PprofPort: 20000
+  LogSavePath: logs
+  LogFileName: app
+  LogFileExt: .log
+
+Database:
+  Type: mysql
+  User:
+  Password:
+  Host:
+  Port:
+  Name:
+  TablePrefix:
+  Charset: utf8mb4
+  ParseTime: true
+  MaxIdleConns: 100
+  MaxOpenConns: 200
+  LogSavePath: logs
+  LogFileName: sql
+  LogFileExt: .log
+  SlowMinTime: 10
+
+DatabaseSub:
+  Type: mysql
+  User:
+  Password:
+  Host:
+  Port:
+  Name:
+  TablePrefix:
+  Charset: utf8mb4
+  ParseTime: true
+  MaxIdleConns: 100
+  MaxOpenConns: 200
+  LogSavePath: logs
+  LogFileName: sql
+  LogFileExt: .log
+  SlowMinTime: 10
+
+Redis:
+  Host: 127.0.0.1
+  Password: 123456
+  Port: 6379
+  DbIndexs: 1,2
+  DbIndex: 0
+  MaxIdle: 30
+  MaxActive: 30
+  IdleTimeout: 200
+  MinIdleConn: 30
+  MaxConn: 50
+
+RedisLocal:
+  Host: 127.0.0.1
+  Password: 123456
+  Port: 6379
+  DbIndexs: 1,2
+  DbIndex: 0
+  MaxIdle: 30
+  MaxActive: 30
+  IdleTimeout: 200
+  MinIdleConn: 30
+  MaxConn: 50
+
+Sms:
+  IsSend: false
+  Domain: http://smssh1.253.com
+  Account:
+  Password:
+
+Rabbitmq:
+  RabbitmqHost:
+  RabbitmqPwd:
+  RabbitmqName:
+  RabbitmqMaxChannel:
+

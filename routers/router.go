@@ -2,11 +2,16 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
+	"log"
+	"zgin/global"
 	"zgin/internal/api/test"
 	"zgin/internal/middlewares"
 )
 
 func InitRouter() *gin.Engine {
+	if !global.Config.App.Debug {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
@@ -24,5 +29,6 @@ func InitRouter() *gin.Engine {
 
 	}
 
+	log.Println("路由初始化成功")
 	return r
 }

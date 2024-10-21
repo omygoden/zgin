@@ -20,8 +20,8 @@ func InitLogger() {
 		TimestampFormat: "2006-01-02 15:04:05",
 	})
 	//logs.SetReportCaller(true)
-	if _, err := os.Stat(fmt.Sprintf("%s/%s/%s", os.Getenv("GOPATH"), env.PROJECT_NAME, global.Config.App.LogSavePath)); err != nil {
-		err = os.Mkdir(fmt.Sprintf("%s/%s/%s", os.Getenv("GOPATH"), env.PROJECT_NAME, global.Config.App.LogSavePath), os.ModePerm)
+	if _, err := os.Stat(fmt.Sprintf("%s/%s", env.PROJECT_PATH, global.Config.App.LogSavePath)); err != nil {
+		err = os.Mkdir(fmt.Sprintf("%s/%s", env.PROJECT_PATH, global.Config.App.LogSavePath), os.ModePerm)
 		if err != nil {
 			log.Println("日志目录创建失败：", err.Error())
 			os.Exit(1)
@@ -62,10 +62,10 @@ func Error(filename, content string, extra map[string]interface{}) {
 var fileMap = make(map[string]string)
 
 func getFilePath(fileName string) string {
-	filePath := fmt.Sprintf("%s/%s/%s/%s", os.Getenv("GOPATH"), env.PROJECT_NAME, global.Config.App.LogSavePath, time.Now().Format(sfconst.GO_TIME_YMD))
+	filePath := fmt.Sprintf("%s/%s/%s", env.PROJECT_PATH, global.Config.App.LogSavePath, time.Now().Format(sfconst.GO_TIME_YMD))
 	fullPath := filePath + "/" + fileName
 
-	if v,ok := fileMap[fullPath];ok {
+	if v, ok := fileMap[fullPath]; ok {
 		return v
 	}
 
@@ -74,7 +74,6 @@ func getFilePath(fileName string) string {
 	}
 
 	fileMap[fullPath] = fullPath
-
 
 	return fullPath
 }

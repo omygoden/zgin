@@ -45,12 +45,14 @@ type allConfig struct {
 
 type app struct {
 	Env         string
+	Debug       bool
 	Host        string
 	PhpHost     string
 	HttpPort    string
 	PprofPort   string
 	LogSavePath string
 	LogFileExt  string
+	LogMaxNum   int
 }
 
 type DatabaseConfig struct {

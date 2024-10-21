@@ -56,7 +56,7 @@ func HttpRequest(urlStr, method string, header map[string]string, param interfac
 	}
 
 	var postParams io.Reader
-	if param != nil && method == http.MethodPost {
+	if param != nil && strings.ToLower(method) != "get" {
 		postParams = formatParamsByHeader(header, param)
 	} else {
 		postParams = nil
@@ -86,13 +86,16 @@ func HttpRequest(urlStr, method string, header map[string]string, param interfac
 	return string(res), nil
 }
 
-//根据头部content-type不同，对参数进行不同处理
+// 根据头部content-type不同，对参数进行不同处理
 func formatParamsByHeader(header map[string]string, params interface{}) io.Reader {
 	if v, ok := params.(string); ok {
 		return strings.NewReader(v)
 	}
 	if v, ok := params.([]byte); ok {
 		return bytes.NewReader(v)
+	}
+	if v, ok := params.(io.Reader); ok {
+		return v
 	}
 	contentType := strings.Split(header["Content-Type"], ";")[0]
 	switch contentType {

@@ -26,7 +26,9 @@ type myWriter struct {
 }
 
 func InitMysqlDriver(maxConn, minConn int) {
-	global.Mysql = InitMysql(global.Config.Database, maxConn, minConn)
+	if global.Config.Database.Host != "" {
+		global.Mysql = InitMysql(global.Config.Database, maxConn, minConn)
+	}
 }
 
 func InitMysql(DatabaseConfig global.DatabaseConfig, maxConn, minConn int) *gorm.DB {
@@ -138,7 +140,9 @@ func (l mysqlLogger) Trace(ctx context.Context, begin time.Time, fc func() (stri
 		sql, rows := fc()
 		go sflogger.MysqlSlowLog(utils.FileWithLineNum(), sql, float64(elapsed.Nanoseconds())/1e6, rows)
 	case l.LogLevel == logger.Info:
-		sql, rows := fc()
-		go sflogger.MysqlLog(utils.FileWithLineNum(), sql, float64(elapsed.Nanoseconds())/1e6, rows)
+		if global.Config.App.Debug {
+			sql, rows := fc()
+			go sflogger.MysqlLog(utils.FileWithLineNum(), sql, float64(elapsed.Nanoseconds())/1e6, rows)
+		}
 	}
 }

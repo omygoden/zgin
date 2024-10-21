@@ -42,8 +42,8 @@ func Empty(val interface{}) bool {
 	return reflect.DeepEqual(val, reflect.Zero(v.Type()).Interface())
 }
 
-//ip/域名检测
-//count表示ping次数，timeout表示ping超时时间
+// ip/域名检测
+// count表示ping次数，timeout表示ping超时时间
 func PingCheck(domain string, count int, timeout time.Duration) (int, error) {
 	pinger, err := ping.NewPinger(domain)
 	if err != nil {
@@ -71,7 +71,15 @@ func GetProjectName() string {
 	return projects[len(projects)-1]
 }
 
-//生成订单号
+func GetProjectPath() string {
+	pwd, _ := os.Getwd()
+	reg := regexp.MustCompile("/bin|/test")
+
+	pwd = reg.ReplaceAllString(pwd, "")
+	return pwd
+}
+
+// 生成订单号
 func GenerateOrderNo() string {
 	m := time.Now().UnixMicro() - time.Now().Unix()*1000000
 	s := "Y" + time.Now().Format("20060102150405") + fmt.Sprintf("%06d", m) + fmt.Sprintf("%d", sfrand.RandRange(1000, 9999))
@@ -117,7 +125,7 @@ func PKCS7UnPadding(origData []byte) []byte {
 	return origData[:(length - unpadding)]
 }
 
-//AesEncrypt 加密函数
+// AesEncrypt 加密函数
 func AesEncrypt(plaintext []byte, key []byte) (crypted []byte, err error) {
 	defer func() {
 		if errs := recover(); errs != nil {
@@ -169,8 +177,8 @@ func AesDecrypt(ciphertext []byte, key []byte) (origData []byte, err error) {
 	return
 }
 
-//获取redis幂等有效期
-//5点之前，默认设置一个小时，如果是5点之后则将有效期设置到隔天的1-5点
+// 获取redis幂等有效期
+// 5点之前，默认设置一个小时，如果是5点之后则将有效期设置到隔天的1-5点
 func GetRedisMdExpire() time.Duration {
 	if time.Now().Hour() <= 5 {
 		return time.Hour
@@ -200,4 +208,3 @@ func GetRandStr(num int) string {
 	}
 	return str
 }
-
